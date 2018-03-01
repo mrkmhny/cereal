@@ -44,7 +44,7 @@ y = trainingSet(:,size(trainingSet)(2));
 m = size(X)(1);
 theta = zeros(size(X)(2),1);
 alpha = 0.3;
-iterations = 1000;
+iterations = 200;
 
 % Normalize all features
 mu = mean(X(:,2:size(X)(2)));
@@ -52,15 +52,18 @@ sigma = std(X);
 Xrange = range( X(:,2:size(X)(2)));
 X_norm = [X(:,1) ( (X(:,2:size(X)(2)) - mu ) ./ Xrange )];
 
+% clear J
+J = [];
+
 % Perform gradient descent
 for i = 1:iterations
   theta = theta - alpha*(1/m)*(sum(((sum((X_norm .* theta'),2)-y).* X_norm)))';
 
   % Cost function
-  J = (1/(2*m)) * sum((sum((X_norm .* theta'),2) - y).^2);
-  
+  J(1,i) = (1/(2*m)) * sum((sum((X_norm .* theta'),2) - y).^2);
+  J(2,i) = i;
 end
-
+plot(J'(:,1), J'(:,2))
 % testSet results
 Xtest = testSet(:,1:size(trainingSet)(2)-3);
 Xtest_norm = [Xtest(:,1) ( (Xtest(:,2:size(Xtest)(2)) - mu ) ./ Xrange )];
