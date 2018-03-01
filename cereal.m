@@ -7,13 +7,14 @@
 filename = 'cereal.csv';
 
 % Load in the data
-data = csvread('cereal.csv');
+csv = csvread('cereal.csv');
+
+% Remove header and empty rows
+data =  csv(2:end,:);
 
 % Shuffle all rows
 data = data(randperm(size(data,1)),:);
 
-% Remove header and empty rows
-data =  data(2:end,:);
 % Remove non numerical columns
 data = data(:,[4,5,6,7,8,9,10,11,12,14,15,16]);
 
@@ -43,7 +44,7 @@ y = trainingSet(:,size(trainingSet)(2));
 m = size(X)(1);
 theta = zeros(size(X)(2),1);
 alpha = 0.3;
-iterations = 400;
+iterations = 1000;
 
 % Normalize all features
 mu = mean(X(:,2:size(X)(2)));
@@ -57,20 +58,19 @@ for i = 1:iterations
 
   % Cost function
   J = (1/(2*m)) * sum((sum((X_norm .* theta'),2) - y).^2);
-
+  
 end
 
 % testSet results
 Xtest = testSet(:,1:size(trainingSet)(2)-3);
 Xtest_norm = [Xtest(:,1) ( (Xtest(:,2:size(Xtest)(2)) - mu ) ./ Xrange )];
 ytest = testSet(:,size(testSet)(2));
-expected = sum(Xtest_norm .* theta',2);
+predicted = sum(Xtest_norm .* theta',2);
 
 difference = sum(Xtest_norm .* theta',2) - ytest;
 
-Xtest_norm;
-resultComparison = [expected ytest difference]
-average = mean(difference)
+resultComparison = [predicted ytest difference]
+averageError = mean(difference)
 % plot calories vs rating
 % testplot = data(:,[1,11]);
 % testplotx = testplot(:,1)
