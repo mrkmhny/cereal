@@ -3,26 +3,23 @@
 % to predict customer rating
 %
 
-% Grab the filename
-filename = 'cereal.csv';
-
 % Load in the data
-csv = csvread('cereal.csv');
+data = csvread('cereal.csv');
 
-% Remove header and empty rows
-data =  csv(2:end,:);
+% Remove header and empty row
+data =  data(2:end,:);
 
 % Shuffle all rows
 data = data(randperm(size(data,1)),:);
 
-% Remove non numerical columns
+% Remove irrelevent columns
 data = data(:,[4,5,6,7,8,9,10,11,12,14,15,16]);
 
 % Use a smaller dataset for easier workflow
 % REMOVE THIS REMOVE THIS REMOVE THIS
 % data = data(1:15,:);
 
-% COLUMN NAMES for reference
+% COLUMN NAMES for reference -- header(orig -> after modification) 
 % name(1),mfr(2),type(3),calories(4->1),protein(5->2),
 % fat(6->3),sodium(7->4),fiber(8->5),carbo(9->6),sugars(10->7),
 % potass(11->8),vitamins(12->9),shelf(13),weight(14->10),cups(15->11),rating(16->12)
@@ -59,11 +56,15 @@ J = [];
 for i = 1:iterations
   theta = theta - alpha*(1/m)*(sum(((sum((X_norm .* theta'),2)-y).* X_norm)))';
 
-  % Cost function
+  % Save Cost Function
   J(1,i) = (1/(2*m)) * sum((sum((X_norm .* theta'),2) - y).^2);
+  % Add iteration number for X axis
   J(2,i) = i;
 end
+
+% Plot change in cost function over time
 plot(J'(:,1), J'(:,2))
+
 % testSet results
 Xtest = testSet(:,1:size(trainingSet)(2)-3);
 Xtest_norm = [Xtest(:,1) ( (Xtest(:,2:size(Xtest)(2)) - mu ) ./ Xrange )];
@@ -74,9 +75,3 @@ difference = sum(Xtest_norm .* theta',2) - ytest;
 
 resultComparison = [predicted ytest difference]
 averageError = mean(difference)
-% plot calories vs rating
-% testplot = data(:,[1,11]);
-% testplotx = testplot(:,1)
-% testploty = testplot(:,11)
-% ratings = data(:,1);
-%scatter(data(:,9),data(:,13));
